@@ -1,11 +1,18 @@
 - name: Ensure development environment
   hosts: localhost
+  gather_facts: false
 
   vars:
     cwd: "{{ playbook_dir }}/.."
 
+  handlers:
+    - name: Prune podman
+      containers.podman.podman_prune:
+        system: true
+      listen: podman_prune
+
   tasks:
-    - name: Ensure podman devel container
+    - name: Ensure podman devel container is {{ container_state }}
       containers.podman.podman_container:
         name: ros2-devel
         image: docker.io/ros:iron
@@ -13,4 +20,7 @@
           - tail
           - -f
           - /dev/null
+        state: "{{ container_state }}"
+      notify: podman_prune
+
 # vim: ft=yaml.ansible
