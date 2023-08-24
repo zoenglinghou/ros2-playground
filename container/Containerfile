@@ -1,0 +1,11 @@
+ARG ROS_DISTRO=iron
+
+FROM docker.io/ros:${ROS_DISTRO}
+
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends ros-${ROS_DISTRO}-turtlesim \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN echo<<EOT >> /root/.bashrc \
+  source /opt/ros/${ROS_DISTRO}/setup.bash \
+  EOT

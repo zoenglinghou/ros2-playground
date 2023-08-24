@@ -13,6 +13,13 @@
       listen: podman_prune
 
   tasks:
+    - name: Gather minimum facts
+      ansible.builtin.setup:
+        gather_subset:
+          - "!all"
+          - "!min"
+          - env
+
     - name: Ensure tmp directory
       ansible.builtin.file:
         path: "{{ tmp_dir }}"
@@ -28,11 +35,17 @@
     - name: Ensure podman devel container is {{ container_state }}
       containers.podman.podman_container:
         name: ros2-devel
-        image: docker.io/ros:iron
-        user: root:root
+        image: ros2-devel:latest
         volume:
+          - /tmp/.X11-unix:/tmp/.X11-unix
           - "{{ cwd }}/src:/src:z"
           - "{{ tmp_dir }}/.bash_history:/root/.bash_history:z"
+        network_mode: host
+        env:
+          DISPLAY: "{{ ansible_env['DISPLAY'] }}"
+        stop_signal: 9
+        security_opt:
+          - label=type:container_runtime_t
         command:
           - tail
           - -f

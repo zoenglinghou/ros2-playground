@@ -1,0 +1,24 @@
+- name: Ensure development image
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    cwd: "{{ playbook_dir }}/.."
+
+  handlers:
+    - name: Prune podman
+      containers.podman.podman_prune:
+        system: true
+      listen: podman_prune
+
+  tasks:
+    - name: Ensure ROS image
+      containers.podman.podman_image:
+        name: ros2-devel
+        path: "{{ cwd }}"
+        build:
+          file: "{{ cwd }}/container/Containerfile"
+        force: true
+      notify: podman_prune
+
+# vim: ft=yaml.ansible
