@@ -1,0 +1,16 @@
+- name: Ensure development environment
+  hosts: localhost
+
+  vars:
+    cwd: "{{ playbook_dir }}/.."
+
+  tasks:
+    - name: Ensure podman devel container
+      containers.podman.podman_container:
+        name: ros2-devel
+        image: docker.io/ros:iron
+        command:
+          - tail
+          - -f
+          - /dev/null
+# vim: ft=yaml.ansible
