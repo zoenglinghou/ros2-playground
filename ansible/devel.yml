@@ -4,6 +4,7 @@
 
   vars:
     cwd: "{{ playbook_dir }}/.."
+    tmp_dir: "{{ cwd }}/tmp"
 
   handlers:
     - name: Prune podman
@@ -12,10 +13,26 @@
       listen: podman_prune
 
   tasks:
+    - name: Ensure tmp directory
+      ansible.builtin.file:
+        path: "{{ tmp_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Ensure bash_history
+      ansible.builtin.file:
+        path: "{{ tmp_dir }}/.bash_history"
+        state: touch
+        mode: "0600"
+
     - name: Ensure podman devel container is {{ container_state }}
       containers.podman.podman_container:
         name: ros2-devel
         image: docker.io/ros:iron
+        user: root:root
+        volume:
+          - "{{ cwd }}/src:/src:z"
+          - "{{ tmp_dir }}/.bash_history:/root/.bash_history:z"
         command:
           - tail
           - -f

@@ -10,7 +10,7 @@ help: # Show help for each of the Makefile recipes.
 
 .PHONY: devel
 devel: # Ensure development environment
-	$(ANSIBLE_CMD_PREFIX) ansible-playbook devel.yml --extra-vars '{"container_state": "started"}'
+	$(ANSIBLE_CMD_PREFIX) ansible-playbook devel.yml --extra-vars '{"container_state": "present"}'
 
 .PHONY: enter
 enter: devel # Enter into a shell inside the container
