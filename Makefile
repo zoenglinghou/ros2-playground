@@ -14,13 +14,15 @@ build: # Ensure development image
 
 .PHONY: devel
 devel: # Ensure development environment
-	$(ANSIBLE_CMD_PREFIX) ansible-playbook devel.yml --extra-vars '{"container_state": "present"}'
+	xhost +
+	$(ANSIBLE_CMD_PREFIX) ansible-playbook devel.yml --extra-vars '{"container_state": "started"}'
 
 .PHONY: enter
-enter: devel # Enter into a shell inside the container
+enter: # Enter into a shell inside the container
 	podman exec -it ros2-devel bash
 
 
 .PHONY: stop
 stop: # Stop container for development
+	xhost -
 	$(ANSIBLE_CMD_PREFIX) ansible-playbook devel.yml --extra-vars '{"container_state": "stopped"}'
