@@ -38,7 +38,7 @@
         image: ros2-devel:latest
         volume:
           - /tmp/.X11-unix:/tmp/.X11-unix
-          - "{{ cwd }}/src:/src:z"
+          - "{{ cwd }}/ws:/ws:z"
           - "{{ tmp_dir }}/.bash_history:/root/.bash_history:z"
         network_mode: host
         env:
